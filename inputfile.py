@@ -325,7 +325,13 @@ class Document:
         root = data.pop("root", None)
         # Document object will expect root to be a Path
         if root:
-            root = Path(root)
+            root_path = Path(root)
+            if root_path.is_absolute():
+                # root was absolute -- keep as-is
+                root = root_path
+            else:
+                # root was relative -- resolve rel source json file
+                root = (filepath.parent / root_path).resolve()
         default_extension = data.pop("default_extension", None)
         author = data.pop("author", None)
         year = data.pop("year", None)
