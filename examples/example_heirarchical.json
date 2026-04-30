@@ -1,0 +1,33 @@
+{
+  "title": "The Codex of the High Seas",
+  "root": "./manuscripts",
+  "default_extension": ".md",
+  "author": "Captain Syntax",
+  "parts": [
+    {
+      "name": "Origins",
+      "chapters": [
+        {
+          "name": "The First Voyage",
+          "files": ["first_voyage.md"]
+        },
+        {
+          "files": ["mutiny.md"]
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "name": "Modern Age",
+      "chapters": [
+        {
+          "files": ["modern_intro.md"]
+        },
+        {
+          "name": "Pirates of the Silicon Seas",
+          "files": ["cyber_pirates.md"]
+        }
+      ]
+    }
+  ]
+}
