@@ -15,6 +15,10 @@ parent_dir = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(parent_dir))
 from inputfile import Document, Part, Chapter, FileRef
 
+# dedicated output dir rel script dir
+script_dir = Path(__file__).resolve().parent
+OUTPUT_DIR = script_dir / "test_output"
+
 
 def main():
     # ================================================================
@@ -87,7 +91,7 @@ def main():
     # Serialize to JSON
     # ================================================================
 
-    output_path = Path("generated_document.json")
+    output_path = OUTPUT_DIR / "generated_document.json"
     doc.to_json(output_path)
     print(f"\n💾 Serialized document to: {output_path}")
 
@@ -129,7 +133,7 @@ def main():
 
     print(flat_doc)
 
-    flat_output = Path("flat_document.json")
+    flat_output = OUTPUT_DIR / "flat_document.json"
     flat_doc.to_json(flat_output)
     print(f"\n💾 Serialized flat document to: {flat_output}")
 
