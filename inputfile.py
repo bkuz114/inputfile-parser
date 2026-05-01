@@ -410,7 +410,7 @@ class Document:
         """Serialize this Document instance to a JSON file.
 
         Args:
-            filepath: Destination path for the JSON file.
+            filepath: Destination path for the JSON file. Parent directories will be created if needed.
             force: Overwrite if destination path exists.
 
         Raises:
@@ -471,6 +471,8 @@ class Document:
             raise FileExistsError(
                 f"File to serialize JSON to exists (supply 'force' arg): {filepath}"
             )
+        # create parent dirs
+        filepath.parent.mkdir(parents=True, exist_ok=True)
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
 
