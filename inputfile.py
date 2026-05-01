@@ -236,6 +236,19 @@ class Document:
 
         return "\n".join(lines)
 
+    @property
+    def files(self) -> list[Path]:
+        """Return all resolved file paths as a flat list."""
+        paths = []
+        for chapter in self.chapters:
+            for file_ref in chapter.files:
+                paths.append(file_ref.path)
+        for part in self.parts:
+            for chapter in part.chapters:
+                for file_ref in chapter.files:
+                    paths.append(file_ref.path)
+        return paths
+
     @classmethod
     def from_json(cls, filepath: Path) -> "Document":
         """Parse a JSON input file into a Document instance.
