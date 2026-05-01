@@ -406,16 +406,8 @@ class Document:
             metadata=metadata,
         )
 
-    def to_json(self, filepath: Path, force: bool = False) -> None:
-        """Serialize this Document instance to a JSON file.
-
-        Args:
-            filepath: Destination path for the JSON file. Parent directories will be created if needed.
-            force: Overwrite if destination path exists.
-
-        Raises:
-            FileExistsError if filepath exists and force = False
-        """
+    def serialize(self) -> None:
+        """Serialize this Document instance to a JSON string."""
 
         def convert(obj: Any) -> Any:
             if isinstance(obj, Path):
@@ -467,14 +459,25 @@ class Document:
 
         data = convert(self)
 
+        return json.dumps(data, indent=2)
+
+    def to_json(self, filepath: Path, force: bool = False) -> None:
+        """Serialize this Document instance to a JSON file.
+
+        Args:
+            filepath: Destination path for the JSON file.
+            force: Overwrite if destination path exists.
+        """
         if filepath.exists() and not force:
             raise FileExistsError(
                 f"File to serialize JSON to exists (supply 'force' arg): {filepath}"
             )
+        # convert this Document to a JSON string
+        json_string = self.serialize()
         # create parent dirs
         filepath.parent.mkdir(parents=True, exist_ok=True)
         with open(filepath, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
+            f.write(json_string)
 
     def __repr__(self) -> str:
         """Compact representation for debugging."""
