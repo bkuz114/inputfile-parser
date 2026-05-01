@@ -92,7 +92,7 @@ def main():
     # ================================================================
 
     output_path = OUTPUT_DIR / "generated_document.json"
-    doc.to_json(output_path)
+    doc.to_json(output_path, True)
     print(f"\n💾 Serialized document to: {output_path}")
 
     # ================================================================
@@ -134,7 +134,7 @@ def main():
     print(flat_doc)
 
     flat_output = OUTPUT_DIR / "flat_document.json"
-    flat_doc.to_json(flat_output)
+    flat_doc.to_json(flat_output, True)
     print(f"\n💾 Serialized flat document to: {flat_output}")
 
 

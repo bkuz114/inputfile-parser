@@ -406,11 +406,15 @@ class Document:
             metadata=metadata,
         )
 
-    def to_json(self, filepath: Path) -> None:
+    def to_json(self, filepath: Path, force: bool = False) -> None:
         """Serialize this Document instance to a JSON file.
 
         Args:
             filepath: Destination path for the JSON file.
+            force: Overwrite if destination path exists.
+
+        Raises:
+            FileExistsError if filepath exists and force = False
         """
 
         def convert(obj: Any) -> Any:
@@ -463,6 +467,10 @@ class Document:
 
         data = convert(self)
 
+        if filepath.exists() and not force:
+            raise FileExistsError(
+                f"File to serialize JSON to exists (supply 'force' arg): {filepath}"
+            )
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
 
