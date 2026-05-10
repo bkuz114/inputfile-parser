@@ -85,7 +85,7 @@ A document must have **either** `chapters` (flat) **or** `parts` (hierarchical),
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `title` | string | No | `"Untitled"` | Document title |
-| `root` | string | No | `None` | Base directory for relative paths. If omitted, file paths are used as-is (absolute recommended). |
+| `root` | string | No | `None` | Base directory for relative paths. Resolves relative to JSON file location. Can be overridden per-part. See [Root Resolution](#root-resolution). |
 | `default_extension` | string | No | `None` | Appended to files with no extension |
 | `author` | string | No | `None` | Optional author name |
 | `year` | integer | No | `None` | Optional publication year |
@@ -127,6 +127,96 @@ Or with a custom display name:
 | `number` | integer | No | Auto-numbered | Part number |
 | `name` | string | No | `"Part X"` | Part display name |
 | `chapters` | array | Yes | — | List of chapters |
+| `root` | string | No | `None` | Base directory for relative paths within this part. See [Root Resolution](#root-resolution). |
+
+## Root resolution
+
+Paths in `files` arrays are resolved relative to a base directory determined by the following precedence (highest to lowest):
+
+1. **`Part.root`** (if present)
+   - Absolute → used directly
+   - Relative → resolved against Document.root (or JSON parent if Document.root absent)
+
+2. **`Document.root`** (if present)
+   - Absolute → used directly
+   - Relative → resolved against JSON file's parent directory
+
+3. **JSON file's parent directory** (fallback if neither root is provided)
+
+**Absolute file paths** are used as-is and are never resolved against Document.root or Part.root.
+
+### Example
+
+```json
+{
+  "root": "docs",
+  "parts": [
+    {
+      "name": "Appendix",
+      "root": "../assets",
+      "chapters": [
+        {"files": ["images/fig1.png"]}
+      ]
+    }
+  ]
+}
+```
+
+- Relative filepaths under the document (without a part) resolve to `./docs` (relative to JSON location)
+- Relative filepaths under the "Appendix" part resolve relative to `./docs/../assets` → `./assets` (relative to JSON location)
+
+### Example: Mixed root resolution
+
+```json
+{
+  "title": "Mixed Resolution Demo",
+  "root": "project",
+  "parts": [
+    {
+      "name": "Absolute Part Root",
+      "root": "/var/data",
+      "chapters": [
+        {"files": ["config/settings.json"]}
+      ]
+    },
+    {
+      "name": "Relative Part Root",
+      "root": "../external",
+      "chapters": [
+        {"files": ["images/logo.png"]}
+      ]
+    },
+    {
+      "name": "No Part Root",
+      "chapters": [
+        {"files": ["docs/readme.txt"]}
+      ]
+    },
+    {
+      "name": "Absolute File Paths",
+      "chapters": [
+        {"files": ["/etc/hosts", "relative.txt"]}
+      ]
+    }
+  ]
+}
+```
+
+Assuming the JSON file is located at `/home/user/config/book.json`:
+
+| Part | File entry | Resolves to |
+|------|-----------|-------------|
+| Absolute Part Root | `config/settings.json` | `/var/data/config/settings.json` |
+| Relative Part Root | `images/logo.png` | `/home/user/external/images/logo.png` |
+| No Part Root | `docs/readme.txt` | `/home/user/config/project/docs/readme.txt` |
+| Absolute File Paths | `/etc/hosts` | `/etc/hosts` (unchanged) |
+| Absolute File Paths | `relative.txt` | `/home/user/config/project/relative.txt` |
+
+**Key takeaways:**
+- Absolute Part.root overrides Document.root entirely
+- Relative Part.root resolves against resolved Document.root
+- No Part.root → inherits Document.root behavior
+- Absolute file paths bypass all root resolution
 
 ## API Reference
 
