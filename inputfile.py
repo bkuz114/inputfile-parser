@@ -429,9 +429,13 @@ class Document:
                 part_chapters_data = part_data.get("chapters", [])
 
                 if not part_chapters_data:
-                    raise ValueError(f"Part {part_number} must have at least one chapter")
+                    raise ValueError(
+                        f"Part {part_number} must have at least one chapter"
+                    )
 
-                part_chapters = parse_chapters(part_chapters_data, root, default_extension)
+                part_chapters = parse_chapters(
+                    part_chapters_data, root, default_extension
+                )
                 part = Part(number=part_number, chapters=part_chapters)
                 if part_name is not None:
                     part.name = part_name
