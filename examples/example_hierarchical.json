@@ -6,6 +6,7 @@
   "parts": [
     {
       "name": "Origins",
+	  "root": "part1",
       "chapters": [
         {
           "name": "The First Voyage",
