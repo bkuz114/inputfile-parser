@@ -31,7 +31,7 @@ def main():
 
         # Optional: serialize back to JSON
         output_path = input_path.with_suffix(".output.json")
-        doc.to_json(output_path)
+        doc.to_json(output_path, True)
         print(f"\n💾 Serialized to: {output_path}")
 
     except Exception as e:
